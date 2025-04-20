@@ -1,26 +1,26 @@
 #!/bin/bash
+
 # Start ssh server
 service ssh restart 
 
 # Starting the services
 bash start-services.sh
 
-# Creating a virtual environment
-python3 -m venv .venv
-source .venv/bin/activate
+source /opt/venv/bin/activate
 
-# Install any packages
-pip install -r requirements.txt  
-
-# Package the virtual env.
 venv-pack -o .venv.tar.gz
+
+# Build the Cassandra
+python app.py
+deactivate
 
 # Collect data
 bash prepare_data.sh
 
-
 # Run the indexer
-bash index.sh data/sample.txt
+bash index.sh /index/data/part-*
 
-# Run the ranker
+# Run the rankers
 bash search.sh "this is a query!"
+bash search.sh "artificial intelligence"
+bash search.sh "big data"
